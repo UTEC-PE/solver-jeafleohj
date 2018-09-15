@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cstring>
 #include <cstdlib>
+#include <map>
+
 struct Character{
 	typedef char T;
 };
@@ -50,17 +52,88 @@ struct NodeTree : public Node{
 };
 
 class Solver{
-	enum class type {numero, variable, parleft, parrigth,
+	enum class type {numero, variable, lpar, rpar,
 					 invalid, suma, resta, potencia, multiplicacion,
 					 division};
 	Node* root;
-	type filter(char c){
+	std::map<char, int> variables;
+	//void cancelOperation(str *str, int &i, int size, bool& signo);
+	int power(int a, int x);
+	type filter(char c);
+public:
+	Solver(char * str);
+};
+
+Solver::Solver(char* str){
+	int size = strlen(str);
+	int parentesis = 0;
+	for(int i=0; i<size; i++){
+		type check = filter(str[i]);
+		if( check == type::invalid ){
+			std::cout << "Invalid expresion" << "\n";
+			//root->killSelf();
+			break;
+		}
+		if( check == type::lpar ){
+			parentesis++;
+			continue;
+		}else if( check == type::rpar ){
+			parentesis--;
+			continue;
+		}
+		Node* tmp;
+		if( check == type::numero ){
+			int buffer = str[i]-'0';
+			int j=i+1;
+			while( j<size && filter(str[j]) == type::numero ){
+				buffer*=10 + str[i]-'0';
+				j++;
+			}
+			tmp = new NodeTree<Integer>(buffer);
+			i = j-1;
+		}else if( check == type::variable ){
+			variables[str[i]];
+		}else if( check == type::suma || check == type::resta ){
+			bool signo = check == type::suma ? true : false;
+			//cancelOperation(str, i, size, signo);
+			if( signo ) tmp = new NodeTree<Character>('+');
+			else tmp = new NodeTree<Character>('-');
+		}else{
+			tmp = new NodeTree<Character>(str[i]);
+		}
+		
+		if( root == nullptr ){
+			root = tmp;
+		}else{
+			if( parentesis ){
+				
+			}else{
+
+			}
+		}
+	}
+}
+//void Solver::cancelOperation(str *str, int &i, int size, bool& signo){
+//	for(int k=1; k<size-i; k++){
+//		if( str[k] == type::resta ) {
+//			signo = !signo;
+//		}
+//	}
+//	i = --k;
+//}
+int Solver::power(int a, int x){
+	if( a == 0 ) return 1;
+	int a2 = power(a, x>>1);
+	if( x&1 ) return a2*a2;
+	return a2*a2*a;
+}
+Solver::type Solver::filter(char c){
 		if( c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' )
 			return type::variable;
 		else if( c == '(')
-			return type::parleft;
+			return type::lpar;
 		else if( c == ')')
-			return type::parrigth;
+			return type::rpar;
 		else if( c == '+' )
 			return type::suma;
 		else if( c == '-' )
@@ -74,35 +147,5 @@ class Solver{
 		else if( c >= '0' && c <= '9')
 			return type::numero;
 		return type::invalid;
-	};
-public:
-	Solver(char * str);
 };
-
-Solver::Solver(char* str){
-	filter('s');
-	int size = strlen(str);
-	for(int i=0; i<size; i++){
-		type check = filter(str[i]);
-		if( check == type::invalid ){
-			std::cout << "Invalid expresion" << "\n";
-			//root->killSelf();
-			break;
-		}
-		Node* tmp;
-		if( check == type::numero){
-			int buffer = str[i]-'0';
-			int j=i+1;
-			while( j<size && filter(str[j]) == type::numero ){
-				buffer*=10 + str[i]-'0';
-				j++;
-			}
-			tmp = new NodeTree<Integer>(buffer);
-			i = j-1;
-		}else{
-			tmp = new NodeTree<Character>(str[i]);
-		}
-	}
-}
-
 #endif
