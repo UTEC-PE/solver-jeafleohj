@@ -19,6 +19,7 @@ struct Node{
 	}
 	virtual void killSelf()=0;
 	virtual void printSelf()=0;
+	virtual ~Node()=0;
 
 	Node* left, *right;
 };
@@ -49,6 +50,9 @@ struct NodeTree : public Node{
 		}
 		std::cout << data  << "\n";
 	}
+	~NodeTree(){
+		killSelf();
+	}
 };
 
 class Solver{
@@ -58,10 +62,15 @@ class Solver{
 	Node* root;
 	std::map<char, int> variables;
 	//void cancelOperation(str *str, int &i, int size, bool& signo);
+	void toStack();
+	void toTree();
 	int power(int a, int x);
 	type filter(char c);
 public:
 	Solver(char * str);
+	~Solver(){
+		//Todo
+	}
 };
 
 Solver::Solver(char* str){
