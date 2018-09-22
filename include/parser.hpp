@@ -15,8 +15,8 @@ class Parser{
 	void next_token();
 	void consume(type t);
 
-	int factor();
-	int term();
+	AST* factor();
+	AST* term();
 public:
 	Parser(Lexer lexer)
 		: lex(lexer), token(lex.next_token())
@@ -24,7 +24,7 @@ public:
 	Parser(std::string t)
 		: token(lex.next_token()), lex(t)
 	{};
-	int expression();
+	AST* expression();
 		  
 };
 void Parser::error(std::string msg){
@@ -39,48 +39,50 @@ void Parser::consume(type t){
 	}
 }
 
-int Parser::factor(){
+AST* Parser::factor(){
+	AST* nodo;
 	std::string val = token.value;
 	if( token.kind == type::number ){
+		nodo = new Number(token);
 		consume(type::number);
-		return stoi(val);
+		return nodo;
 	}
 	else if(token.kind == type::lpar) {
 		consume(type::lpar);
-		int r = expression();
+		nodo = expression();
 		consume(type::rpar);
-		return r;
+		return nodo;
 	}
 
-	return 1;
+	return nullptr;
 }
 
-int Parser::term(){
-	int r = factor();
+AST* Parser::term(){
+	AST* nodo = factor();
 	while( token.kind == type::multiplication || token.kind == type::division ){
+		nodo = new BinaryOperator(nodo, token, factor());
 		if( token.kind == type::multiplication ){
 			consume(type::multiplication);
-			r = r * factor();
 		}else if( token.kind == type::division ){
 			consume(type::division);
-			r = r / factor();
 		}
+	
 	}
-	return r;
+	return nodo;
 }
 
-int Parser::expression(){
+AST* Parser::expression(){
 	//Arithmetic expression parser / interpreter
-	int r = term();
+	AST* nodo = term();
 	while ( token.kind == type::minus || token.kind == type::plus) {
+		nodo = new BinaryOperator(nodo, token, factor());
 		if( token.kind == type::plus){
 			consume(type::plus);
-			r = term() + r;
 		}else if(token.kind == type::minus){
 			consume(type::minus);
-			r = r - term();
 		}
+
 	}
-	return r;
+	return nodo;
 }
 #endif
