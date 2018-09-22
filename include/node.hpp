@@ -13,5 +13,8 @@ struct Node{
 	virtual ~Node()=0;
 	Node* left, *right;
 };
-
+Node::~Node(){
+	delete right;
+	delete left;
+}
 #endif
