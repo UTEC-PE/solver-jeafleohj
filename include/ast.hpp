@@ -1,12 +1,15 @@
 #ifndef AST_HPP
 #define AST_HPP
+
+#include <string>
+
 #include "node.hpp"
 #include "token.hpp"
 
 typedef Node AST;
 
 struct Character{
-	typedef char T;
+	typedef std::string T;
 };
 
 struct Integer{
@@ -46,26 +49,31 @@ struct NodeTree : public AST{
 	}
 };
 
-template <typename ST>
-class BinaryOperator: public NodeTree<ST>{
+class BinaryOperator: public NodeTree<Character>{
 	//Testing, talvez sea mejor un char
 	Token op;
 public:
 	BinaryOperator(AST* l, Token t, AST* r)
-		: NodeTree<ST>(t, l, r), op(t)
-	{}
-
+		: NodeTree<Character>(t, l, r), op(t)
+	{
+		NodeTree<Character>::value = t.value;
+	}
+	~BinaryOperator(){
+		
+	}
 };
 
-template <typename ST>
-class Number: public NodeTree<ST>{
+class Number: public NodeTree<Integer>{
 
 public:
 	Number(Token t)
-		: NodeTree<ST>(t)
+		: NodeTree<Integer>(t)
 	{
-		NodeTree<ST>::value = stoi(t.value);
+		NodeTree<Integer>::value = stoi(t.value);
 	};
+	~Number(){
+		
+	}
 };
 
 #endif
