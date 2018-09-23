@@ -87,6 +87,6 @@ Token Lexer::next_token(){
 		error("Token not valid");
 	}
 	//error("Expression's end");
-	return Token(type::END, "");
+	return Token(type::END, '\0');
 }
 #endif
