@@ -9,6 +9,10 @@ enum class type {
 struct Token {
 	type kind;
 	std::string value;
+	Token(){
+		kind = type::EMPTY;
+		value = "";
+	}
 	Token(type t, std::string v)
 		: kind(t), value(v)
 	{};
