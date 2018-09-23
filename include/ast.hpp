@@ -39,10 +39,11 @@ struct NodeTree : public AST{
 		if(left){
 			left->printSelf();
 		}
+		std::cout << value  << "\n";
 		if(right){
 			right->printSelf();
 		}
-		std::cout << value  << "\n";
+	
 	}
 	~NodeTree(){
 		killSelf();
