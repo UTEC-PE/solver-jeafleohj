@@ -1,9 +1,20 @@
 #ifndef TOKEN_HPP
 #define TOKEN_HPP
 
-enum class type {
-				 variable,plus, minus, multiplication, exponentiation,
-				 division, number, lpar, rpar, EMPTY, END
+enum class type : char{
+					   variable = 'v',
+					   plus = '+',
+					   minus = '-',
+					   multiplication = 'x',
+					   exponentiation = '^',
+					   division = '/',
+					   number = 'n',
+					   lpar = '(',
+					   rpar = ')',
+					   uplus = 's',
+					   uminus = 'r',
+					   EMPTY,
+ END
 };
 
 struct Token {
