@@ -12,9 +12,20 @@
 #include "ast.hpp"
 using namespace std;
 int main(){
-	string s = " (7 + (((3 +---+- 2))) * 5 +7) / -11";
+	map<string, double> var;
+	string s = " (7 + (((3 +---+- 2))) * 5 +7) / -b";
 	Parser i(s);
-	AST* p = i.expression();
-	//p->printSelf();
-	cout << p->eval()  << "\n";
+	AST* p;
+	i.getData(p,var);
+	if( var.empty()){
+		cout << p->eval()  << "\n";		
+	}else{
+		for (auto it = var.begin(); it != var.end(); ++it) {
+			double v ;
+			cout << "Ingrese un valor para la variable \'"<<it->first<<"\'\n";
+			cin>>v;
+			var[it->first] = v;
+		}
+		cout << p->eval(var)  << "\n";		
+	}
 }
