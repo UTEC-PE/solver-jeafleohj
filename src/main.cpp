@@ -1,5 +1,12 @@
 #include <iostream>
-#include "solver.hpp"
+#include <vector>
+#include <algorithm>
+#include <map>
+#include <string>
+#include "parser.hpp"
+#include "ast.hpp"
+
+
 using namespace std;
 void menu() {
       system("clear");
@@ -15,9 +22,23 @@ void menu() {
 
 
 int main(int argc, char const *argv[]) {
-    menu();
-    cout << "\nPress enter to continue ..."; 
-    cin.get(); 
-    return EXIT_SUCCESS;
+	map<string, double> var;
+	string s ;
+	cout << "Ingrese una expression" << "\n";
+	cin>>s;
+	Parser i(s);
+	AST* p;
+	i.getData(p,var);
+	if( var.empty()){
+		cout << p->eval()  << "\n";		
+	}else{
+		for (auto it = var.begin(); it != var.end(); ++it) {
+			double v ;
+			cout << "Ingrese un valor para la variable \'"<<it->first<<"\'\n";
+			cin>>v;
+			var[it->first] = v;
+		}
+		cout << p->eval(var)  << "\n";		
+	}
 }
 
