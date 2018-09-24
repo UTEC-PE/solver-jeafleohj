@@ -20,7 +20,7 @@ struct NodeTree : public AST{
 	typedef typename ST::T T;
 	T value;
 	Token token;
-	NodeTree(Token token) : AST(), token(token)
+	NodeTree(Token token) : token(token)
 	{};
 	NodeTree(Token token, AST* l, AST* r) : AST(l,r), token(token)
 	{};
@@ -46,6 +46,14 @@ struct NodeTree : public AST{
 	double eval(){
 		if( token.kind == type::number ){
 			return stoi(value);
+		}else if( token.kind == type::uplus){
+			double tmpval = 1;
+			if(right) tmpval *= right->eval();
+			return tmpval;
+		}else if(token.kind == type::uminus){
+			double tmpval = -1;
+			if(right) tmpval *= right->eval();
+			return tmpval;
 		}else{
 			double tmpval;
 			switch( token.kind ){
@@ -79,15 +87,27 @@ struct NodeTree : public AST{
 };
 
 class BinaryOperator: public NodeTree<Character>{
-	//Testing, talvez sea mejor un char
-	Token op;
 public:
 	BinaryOperator(AST* l, Token t, AST* r)
-		: NodeTree<Character>(t, l, r), op(t)
+		: NodeTree<Character>(t, l, r)
 	{
 		NodeTree<Character>::value = t.value;
 	}
 	~BinaryOperator(){
+		
+	}
+};
+
+class UnaryOperator: public NodeTree<Character>{
+public:
+	UnaryOperator(Token t, AST* exp)
+		: NodeTree<Character>(t) 
+	{
+		value = t.value;
+		left = nullptr;
+		right = exp;
+	}
+	~UnaryOperator(){
 		
 	}
 };

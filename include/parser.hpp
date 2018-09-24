@@ -1,5 +1,5 @@
-#ifndef TOKENIZER_HPP
-#define TOKENIZER_HPP
+#ifndef PARSER_HPP
+#define PARSER_HPP
 
 #include <string>
 
@@ -37,18 +37,28 @@ void Parser::consume(type t){
 	if( token.kind == t ){
 		token = lex.next_token();
 	}else{
-		error("Token: "+token.value+ " is not the desired");
+		error("Token: " +token.value+ " is not the desired");
 	}
 }
 
 AST* Parser::factor(){
 	AST* nodo = nullptr;
-	if( token.kind == type::number ){
+	if( token.kind == type::plus ){
+		Token u = token;
+		u.kind = type::uplus;
+		consume(type::plus);
+		nodo = new UnaryOperator(u, factor());
+		return nodo;
+	}else if( token.kind == type::minus ){
+		Token u (type::uminus, token.value);
+		consume(type::minus);
+		nodo = new UnaryOperator(u, factor());
+		return nodo;
+	}else if( token.kind == type::number ){
 		nodo = new Number(token);
 		consume(type::number);
 		return nodo;
-	}
-	else if(token.kind == type::lpar) {
+	}else if(token.kind == type::lpar) {
 		consume(type::lpar);
 		nodo = expression();
 		consume(type::rpar);
@@ -66,7 +76,6 @@ AST* Parser::term(){
 		}else if( t.kind == type::division ){
 			consume(type::division);
 		}
-
 		nodo = new BinaryOperator(nodo, t, factor());
 	}
 	return nodo;
