@@ -10,6 +10,7 @@ struct Node{
 	{};
 	virtual void killSelf()=0;
 	virtual void printSelf()=0;
+	virtual double eval()=0;
 	virtual ~Node()=0;
 	Node* left, *right;
 };

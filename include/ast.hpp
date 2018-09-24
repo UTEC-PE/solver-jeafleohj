@@ -2,7 +2,6 @@
 #define AST_HPP
 
 #include <string>
-
 #include "node.hpp"
 #include "token.hpp"
 
@@ -35,15 +34,44 @@ struct NodeTree : public AST{
 		delete this;
 	}
 	void printSelf(){
-		//Print inorder
+		std::cout << value  << "\n";	
 		if(left){
 			left->printSelf();
 		}
-		std::cout << value  << "\n";
 		if(right){
 			right->printSelf();
 		}
-	
+
+	}
+	double eval(){
+		if( token.kind == type::number ){
+			return stoi(value);
+		}else{
+			double tmpval;
+			switch( token.kind ){
+				case type::plus:
+					tmpval = 0;
+					if(left) tmpval += left->eval();
+					if(right) tmpval += right->eval();
+					break;
+				case type::minus:
+					tmpval = 0;
+					if(left) tmpval -= left->eval();
+					if(right) tmpval = right->eval() - tmpval;
+					break;
+				case type::multiplication:
+					tmpval = 1;
+					if(left) tmpval *= left->eval();
+					if(right) tmpval *= right->eval();
+					break;
+				case type::division:
+					tmpval = 1;
+					if(left) tmpval = left->eval()/ tmpval;;
+					if(right) tmpval /= right->eval(); 
+					break;
+			}
+			return tmpval;
+		}
 	}
 	~NodeTree(){
 		killSelf();
@@ -64,13 +92,13 @@ public:
 	}
 };
 
-class Number: public NodeTree<Integer>{
+class Number: public NodeTree<Character>{
 
 public:
 	Number(Token t)
-		: NodeTree<Integer>(t)
+		: NodeTree<Character>(t)
 	{
-		NodeTree<Integer>::value = stoi(t.value);
+		NodeTree<Character>::value = t.value;
 	};
 	~Number(){
 		
