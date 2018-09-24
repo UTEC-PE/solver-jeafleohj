@@ -12,8 +12,9 @@
 #include "ast.hpp"
 using namespace std;
 int main(){
-	string s = " 7 + (((3 + 2)))";
+	string s = " (7 + (((3 +---+- 2))) * 5 +7) / -11";
 	Parser i(s);
 	AST* p = i.expression();
-	p->printSelf();
+	//p->printSelf();
+	cout << p->eval()  << "\n";
 }
