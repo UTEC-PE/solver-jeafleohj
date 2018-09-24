@@ -14,7 +14,7 @@ enum class type : char{
 					   uplus = 's',
 					   uminus = 'r',
 					   EMPTY,
- END
+					   END
 };
 
 struct Token {
@@ -41,5 +41,4 @@ struct Token {
 		return *this;
 	}
 };
-
 #endif
