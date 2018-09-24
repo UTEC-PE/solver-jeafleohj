@@ -4,6 +4,7 @@
 #include <string>
 #include "node.hpp"
 #include "token.hpp"
+#include <cmath>
 
 typedef Node AST;
 
@@ -76,6 +77,10 @@ struct NodeTree : public AST{
 					tmpval = 1;
 					if(left) tmpval = left->eval()/ tmpval;;
 					if(right) tmpval /= right->eval(); 
+					break;
+				case type::exponentiation:
+					std::cout << "ASD" << "\n";
+					tmpval = pow(left->eval(), right->eval());
 					break;
 			}
 			return tmpval;

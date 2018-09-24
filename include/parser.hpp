@@ -15,6 +15,7 @@ class Parser{
 	void next_token();
 	void consume(type t);
 
+	AST* exp();
 	AST* factor();
 	AST* term();
 public:
@@ -40,6 +41,7 @@ void Parser::consume(type t){
 		error("Token: " +token.value+ " is not the desired");
 	}
 }
+
 
 AST* Parser::factor(){
 	AST* nodo = nullptr;
@@ -67,8 +69,21 @@ AST* Parser::factor(){
 	return nodo;
 }
 
-AST* Parser::term(){
+AST* Parser::exp(){
 	AST* nodo = factor();
+    while ( token.kind == type::exponentiation) {
+		Token t = token;
+		if (t.kind == type::exponentiation) {
+			consume(type::exponentiation);
+		}
+		nodo = new BinaryOperator(nodo, t, exp());
+    }
+	return nodo;
+}
+
+
+AST* Parser::term(){
+	AST* nodo = exp();
 	while( token.kind == type::multiplication || token.kind == type::division ){
 		Token t = token;
 		if( t.kind == type::multiplication ){
