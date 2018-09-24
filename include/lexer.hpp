@@ -83,7 +83,14 @@ Token Lexer::next_token(){
 		if( cchar == ')'){
 			advance();
 			return Token(type::rpar, ')');
-		}		
+		}
+		if( cchar >= 'a' && cchar <= 'z' ||
+			cchar >= 'A' && cchar <= 'Z'
+			){
+			char c = cchar;
+			advance();
+			return Token(type::variable, c);
+		}
 		error("Token not valid");
 	}
 	//error("Expression's end");

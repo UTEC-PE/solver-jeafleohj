@@ -4,6 +4,7 @@
 #include <string>
 #include "node.hpp"
 #include "token.hpp"
+#include <map>
 #include <cmath>
 
 typedef Node AST;
@@ -21,6 +22,7 @@ struct NodeTree : public AST{
 	typedef typename ST::T T;
 	T value;
 	Token token;
+
 	NodeTree(Token token) : token(token)
 	{};
 	NodeTree(Token token, AST* l, AST* r) : AST(l,r), token(token)
@@ -79,8 +81,52 @@ struct NodeTree : public AST{
 					if(right) tmpval /= right->eval(); 
 					break;
 				case type::exponentiation:
-					std::cout << "ASD" << "\n";
 					tmpval = pow(left->eval(), right->eval());
+					break;
+			}
+			return tmpval;
+		}
+	}
+	double eval(std::map<std::string, double> variables){
+		if( token.kind == type::number ){
+			return stoi(value);
+		}
+		else if( token.kind == type::variable){
+			return variables[token.value];
+		}
+		else if( token.kind == type::uplus){
+			double tmpval = 1;
+			if(right) tmpval *= right->eval(variables);
+			return tmpval;
+		}else if(token.kind == type::uminus){
+			double tmpval = -1;
+			if(right) tmpval *= right->eval(variables);
+			return tmpval;
+		}else{
+			double tmpval;
+			switch( token.kind ){
+				case type::plus:
+					tmpval = 0;
+					if(left) tmpval += left->eval(variables);
+					if(right) tmpval += right->eval(variables);
+					break;
+				case type::minus:
+					tmpval = 0;
+					if(left) tmpval -= left->eval(variables);
+					if(right) tmpval = right->eval(variables) - tmpval;
+					break;
+				case type::multiplication:
+					tmpval = 1;
+					if(left) tmpval *= left->eval(variables);
+					if(right) tmpval *= right->eval(variables);
+					break;
+				case type::division:
+					tmpval = 1;
+					if(left) tmpval = left->eval(variables)/ tmpval;;
+					if(right) tmpval /= right->eval(variables); 
+					break;
+				case type::exponentiation:
+					tmpval = pow(left->eval(variables), right->eval(variables));
 					break;
 			}
 			return tmpval;

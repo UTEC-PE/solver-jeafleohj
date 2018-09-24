@@ -2,6 +2,7 @@
 #define PARSER_HPP
 
 #include <string>
+#include <map>
 
 #include "token.hpp"
 #include "lexer.hpp"
@@ -10,6 +11,7 @@
 class Parser{
 	Lexer lex;
 	Token token;
+	std::map<std::string, double> variables;
 
 	void error(std::string msg);
 	void next_token();
@@ -18,6 +20,7 @@ class Parser{
 	AST* exp();
 	AST* factor();
 	AST* term();
+	AST* expression();
 public:
 	Parser(Lexer lexer)
 		: lex(lexer), token(lexer.next_token())
@@ -27,7 +30,10 @@ public:
 	{
 		token = lex.next_token();
 	};
-	AST* expression();
+	void getData( AST* &tree, std::map<std::string, double>& v ){
+		tree = expression();
+		v = variables;
+	}
 		  
 };
 void Parser::error(std::string msg){
@@ -41,7 +47,6 @@ void Parser::consume(type t){
 		error("Token: " +token.value+ " is not the desired");
 	}
 }
-
 
 AST* Parser::factor(){
 	AST* nodo = nullptr;
@@ -60,7 +65,17 @@ AST* Parser::factor(){
 		nodo = new Number(token);
 		consume(type::number);
 		return nodo;
-	}else if(token.kind == type::lpar) {
+
+	}
+	else if( token.kind == type::variable){
+		Token t(token);
+		t.kind = type::variable;
+		variables[t.value];
+		nodo = new Number(t);
+		consume(type::variable);
+		return nodo;			
+	}
+	else if(token.kind == type::lpar) {
 		consume(type::lpar);
 		nodo = expression();
 		consume(type::rpar);
