@@ -33,6 +33,9 @@ Ingrese una expression
 Ingrese una expression
 17*3/2-5
 30.5
+
+-(5-4) y -(5+4) dan el mismo resultado,
+parece ser un tema de paréntesis o unarios
 	 
 	 */
 	map<string, double> var;
